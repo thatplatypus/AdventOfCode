@@ -1,5 +1,4 @@
-﻿using System.Drawing;
-using System.Text.RegularExpressions;
+﻿using System.Text.RegularExpressions;
 
 namespace AdventOfCode2023.Day3
 {
@@ -41,7 +40,8 @@ namespace AdventOfCode2023.Day3
         public static long Solve_Part2(IEnumerable<string> input)
         {
             List<Part> parts = [];
-            List<Point> gears = [];
+            List<Gear> gears = [];
+            long result = 0;
             int y = 0;
 
             foreach (string line in input)
@@ -59,23 +59,22 @@ namespace AdventOfCode2023.Day3
 
                 foreach (Match match in AllGears().Matches(line).Cast<Match>())
                 {
-                    gears.Add(new Point { X = match.Index, Y = y });
+                    gears.Add(new Gear { X = match.Index, Y = y });
                 }
 
                 y++;
             }
 
-            long gearRatioTotal = 0;
             foreach (var gear in gears)
             {
                 var nearbyParts = parts.Where(part => part.IsNearby(gear.X, gear.Y)).ToList();
                 if (nearbyParts.Count == 2)
                 {
-                    gearRatioTotal += nearbyParts[0].PartNumber * nearbyParts[1].PartNumber;
+                    result += nearbyParts[0].PartNumber * nearbyParts[1].PartNumber;
                 }
             }
 
-            return gearRatioTotal;
+            return result;
         }
 
         private static bool IsDanglingPart(char[][] grid, int i, int sj, int ej)
@@ -119,5 +118,11 @@ namespace AdventOfCode2023.Day3
                 return Enumerable.Range(X - 1, Length + 2).Contains(symbolX);
             }
         };
+
+        partial struct Gear
+        {
+            public int X { get; set; }
+            public int Y { get; set; }
+        }
     }
 }
